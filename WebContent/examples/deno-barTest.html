@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	
+	<title>Bar Charts</title>
+
+    <link class="include" rel="stylesheet" type="text/css" href="../jquery.jqplot.min.css" />
+    <link rel="stylesheet" type="text/css" href="examples.min.css" />
+    <link type="text/css" rel="stylesheet" href="syntaxhighlighter/styles/shCoreDefault.min.css" />
+    <link type="text/css" rel="stylesheet" href="syntaxhighlighter/styles/shThemejqPlot.min.css" />
+  
+  <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="../excanvas.js"></script><![endif]-->
+    <script class="include" type="text/javascript" src="../jquery.min.js"></script>
+    
+   
+</head>
+<body>
+    <div class="logo">
+   <div class="nav">
+   <a class="nav" href="../../../index.php"><span>&gt;</span>Home</a>
+   <a class="nav"  href="../../../docs/"><span>&gt;</span>Docs</a>
+   <a class="nav"  href="../../download/"><span>&gt;</span>Download</a>
+   <a class="nav" href="../../../info.php"><span>&gt;</span>Info</a>
+   <a class="nav"  href="../../../donate.php"><span>&gt;</span>Donate</a>
+   </div>
+</div>
+    <div class="example-content">
+
+    <div class="example-nav">
+  <a href="barLineAnimated.html">Previous</a> <a href="./">Examples</a> <a href="bezierCurve.html">Next</a></div>
+
+      
+<!-- Example scripts go here -->
+
+    <p>Below is a default bar plot.  Bars will highlight on mouseover.  Events are triggered when you mouseover a bar and also when you click on a bar.  Here We capture the 'jqplotDataClick' event and display the clicked series index, point index and data values. When series data is assigned as a 1-dimensional array as in this example, jqPlot automatically converts it into a 2-dimensional array for plotting.  So a series defined as [2, 6, 7, 10] will become [[1,2], [2,6], [3,7], [4,10]].<p>
+    
+    <div><span>You Clicked: </span><span id="info1">Nothing yet</span></div>
+        
+    <div id="chart1" style="margin-top:20px; margin-left:20px; width:300px; height:300px;"></div>
+<pre class="code brush:js"></pre>
+
+    <p>The plot target also fires a 'jqplotDataMouseOver' when the cursor is moused over a bar even if highlighting is turned off.  This event will fire continuously as the user mouses over the bar.  'jqplotDataHighlight' fires only once when the user first passes over the bar.  Additionally, a 'jqplotDataUnhighlight' event is fired when the user moves out of a bar (if highlighting is enabled).<p>
+
+    <div><span>Moused Over: </span><span id="info2">Nothing</span></div>
+    
+    <div id="chart2" style="margin-top:20px; margin-left:20px; width:300px; height:300px;"></div>
+<pre class="code brush:js"></pre>
+    
+ 
+ 
+
+  <script class="code" type="text/javascript">$(document).ready(function(){
+        $.jqplot.config.enablePlugins = true;
+        var s1 = [2, 6, 7, 13];
+        var ticks = ['aaaaa', 'bbbbbb', 'cccccccccccccc', 'dddddddddd'];
+        
+        plot1 = $.jqplot('chart1', [s1], {
+            // Only animate if we're not using excanvas (not in IE 7 or IE 8)..
+            animate: !$.jqplot.use_excanvas,
+			title:'Bar Chart with Varying Colors',
+			seriesColors:['#85802b', '#85802b', '#73C774', '#C7754C', '#17BDB8'],
+            seriesDefaults:{
+                renderer:$.jqplot.BarRenderer,
+            rendererOptions: {                
+			// Set the varyBarColor option to true to use different colors for each bar.               
+			// The default series colors are used.                
+			    varyBarColor: true            
+			},
+               pointLabels:{
+        show: true,
+        labels:['fourteen', 'thirty two', 'fourty one', 'fourty four']
+      }
+            },
+    axesDefaults: {
+        tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+        tickOptions: {
+          angle: -30,
+		  fontFamily: 'Georgia',
+          fontSize: '20pt'
+        }
+    },
+            axes: {
+                xaxis: {
+                    renderer: $.jqplot.CategoryAxisRenderer,
+				 
+                    ticks: ticks 
+                }
+            }  
+          
+        });
+    
+        $('#chart1').bind('jqplotDataClick', 
+            function (ev, seriesIndex, pointIndex, data) {
+                $('#info1').html('series: '+seriesIndex+', point: '+pointIndex+', data: '+data);
+            }
+        );
+    });</script>
+    
+  <script class="code" type="text/javascript">$(document).ready(function(){
+        var s1 = [2, 6, 7, 10];
+        var s2 = [7, 5, 3, 2];
+        var ticks = ['a', 'b', 'c', 'd'];
+        
+        plot2 = $.jqplot('chart2', [s1, s2], {
+            seriesDefaults: {
+                renderer:$.jqplot.BarRenderer,
+                pointLabels: { show: true }
+            },
+            axes: {
+                xaxis: {
+                    renderer: $.jqplot.CategoryAxisRenderer,
+                    ticks: ticks
+                },
+				 yaxis:{ pad: 1.1 } 
+            },
+			            legend: {                show: true,                location: 's',                placement: 'outside'}
+        });
+    
+        $('#chart2').bind('jqplotDataHighlight', 
+            function (ev, seriesIndex, pointIndex, data) {
+                $('#info2').html('series: '+seriesIndex+', point: '+pointIndex+', data: '+data);
+            }
+        );
+            
+        $('#chart2').bind('jqplotDataUnhighlight', 
+            function (ev) {
+                $('#info2').html('Nothing');
+            }
+        );
+    });</script>
+    
+ 
+    
+ 
+ 
+    
+ 
+
+ 
+<!-- End example scripts -->
+
+<!-- Don't touch this! -->
+
+
+    <script class="include" type="text/javascript" src="../jquery.jqplot.min.js"></script>
+    <script type="text/javascript" src="syntaxhighlighter/scripts/shCore.min.js"></script>
+    <script type="text/javascript" src="syntaxhighlighter/scripts/shBrushJScript.min.js"></script>
+    <script type="text/javascript" src="syntaxhighlighter/scripts/shBrushXml.min.js"></script>
+<!-- Additional plugins go here -->
+
+  <script class="include" type="text/javascript" src="../jquery.jqplot.min.js"></script>
+
+  <script class="include" type="text/javascript" src="../plugins/jqplot.barRenderer.min.js"></script>
+  
+  <script class="include" type="text/javascript" src="../plugins/jqplot.pieRenderer.min.js"></script>
+  <script class="include" type="text/javascript" src="../plugins/jqplot.categoryAxisRenderer.min.js"></script>
+  <script class="include" type="text/javascript" src="../plugins/jqplot.pointLabels.min.js"></script>
+  <script class="include" language="javascript" type="text/javascript" src="../plugins/jqplot.canvasTextRenderer.min.js"></script>
+  <script class="include" language="javascript" type="text/javascript" src="../plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
+<!-- End additional plugins -->
+
+
+	</div>	
+	<script type="text/javascript" src="example.min.js"></script>
+
+</body>
+
+
+</html>
