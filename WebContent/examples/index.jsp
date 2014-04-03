@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<!-- <link class="include" rel="stylesheet" type="text/css" href="../jquery.jqplot.min.css" /> -->
+<link class="include" rel="stylesheet" type="text/css" href="../jquery.jqplot.min.css" />
 <link rel="stylesheet" type="text/css" href="examples.min.css" />
 <link type="text/css" rel="stylesheet" href="syntaxhighlighter/styles/shCoreDefault.min.css" />
 <link type="text/css" rel="stylesheet" href="syntaxhighlighter/styles/shThemejqPlot.min.css" />
@@ -15,7 +15,7 @@
 <div class="example-content">
 <span id="info3">Nothing yet.</span>
 <div id="chart1" style="width:338px; height:224px;"></div>
-<div id="chart3" style="width:250px; height:240px;"/>
+<div id="chart3" style="width:390px; height:240px;"/>
 <div style="position:absolute;z-index:99;display:none;" id="tooltip1b"></div>
 <script class="code" type="text/javascript">
 	  $(document).ready(function(){   
@@ -62,9 +62,6 @@
 		      seriesColors:['#85802b', '#85802b', '#73C774', '#C7754C', '#17BDB8'],
 		      seriesDefaults: {
 			  //  	color: '#3366cc',
-			    	/* rendererOptions: {
-			    		barWidth: '10'
-			    	}, */
 			    	pointLabels: {
 			    		show: true
 			    	},
@@ -77,17 +74,18 @@
 			  grid: {
 			    	gridLineColor: '#E5E5E5',
 			        background: '#FFFFFF',
-			        borderColor: '#FFFFFF'
+			        borderColor: '#FFFFFF',
+			    //    shadow: false
 			    },
 			  highlighter: {
 				  	show: true,
 				 	sizeAdjust: 10,
 			    	tooltipLocation: 'se',
 			        tooltipAxes: 'y',
-			        tooltipFormatString: '<span style="color:red;">hello</span><br/><span style="background:#FF0000;width:2px;height:2px"></span> %.2f',
-			        useAxesFormatters: false
+			   //     tooltipFormatString: '%.2f',
+			        useAxesFormatters: false,
+			        tooltipContentEditor:tooltipContentEditor
 			      }
-			    
 		    });
 		    $('#' + chartId).bind('jqplotDataClick', 
 		            function (ev, seriesIndex, pointIndex, data) {
@@ -104,7 +102,111 @@
 	    	        }
 		            }
 		    );
+		    function tooltipContentEditor(str, seriesIndex, pointIndex, plot) {
+		        // 显示series_label, x-axis_tick, y-axis 数据
+		        return "" + plot.data[seriesIndex][pointIndex];
+		    }
 	}  
+	 
+	 function drawPieChartUtil(options, piechartID, colors){
+			
+			 plot1 = $.jqplot(piechartID, [options], {
+	             seriesDefaults: {
+	             fill: true, 
+	              renderer:$.jqplot.PieRenderer,
+	              pointLabels: {
+			    		show: true
+			    	},
+	             rendererOptions:{
+	                        seriesColors: colors,
+	                        diameter: 200, // 设置饼的直径
+	                                 padding: 20,         // 饼距离其分类名称框或者图表边框的距离，变相该表饼的直径
+	                        shadowAlpha: 0.08,    // 设置阴影区域的透明度
+	                        showDataLabels: true, //显示百分比
+	                        shadowAngle:90,        //显示阴影的角度
+	                        color: '#DCDCDC'
+	                        }
+	              },
+	               /* cursor: {
+	        	   	show: true,
+	        	   	showTooltip: true,
+	        	   	followMouse: true,
+	        	   	tooltipLocation: 'e',
+	        	   	tooltipOffset: 30,
+	        	   	useAxesFormatters: false,
+	        	   	tooltipFormatString: '%s, %P',
+	              },  */
+	             legend:{
+	                        show: true,         //设置是否出现分类名称框（即所有分类的名称出现在图的某个位置）
+	                        location: 'ne',     // 分类名称框出现位置, nw, n, ne, e, se, s, sw, w.
+	                        fontSize:10,
+	                        //border: 'none',                //设置图注的边框不显示
+	                        placement: 'inside',
+	                 marginRight: 50,
+	                 marginTop: 10,
+	             },
+	           
+	              highlighter: {
+	                      show:true,
+	                      tooltipOffset: -100,
+	                 tooltipLocation: 'e',
+	                 useAxesFormatters: false,
+	                 formatString:'%s, %P'
+	             },  
+	             grid:{
+	             //drawBorder: false, 
+	                 //drawGridlines: false,
+	                 //background: '#ffffff',
+	                 shadow:false,
+	                
+	              
+	                        },gridPadding: {
+	                                 top:0, 
+	                                 bottom:0, 
+	                                 left:0, 
+	                                 right:0
+	                        }
+	     });
+		//	 pieHightlight(piechartID);
+	 }
+	 
+	 function pieHightlight(target)
+	 {
+	 $('#' + target).bind('jqplotDataHighlight',   
+	 	    function (ev, seriesIndex, pointIndex, data, radius) {      
+	 	      var chart_left = $('#' + target).offset().left,  
+	 	      chart_top = $('#' + target).offset().top,  
+	 	        x = ev.pageX,  // convert x axis unita to pixels  
+	 	        y = ev.pageY;  // convert y axis units to pixels  
+	 	      var color = 'rgb(50%,50%,100%)';  
+	 	      if ($('#'+ target + 'tooltip1b').length <= 0){  
+	 	        var tips = $('<div></div>');  
+	 	        tips.attr('id',target + 'tooltip1b');  
+	 	        $('#' + target).append(tips);  
+	 	      }  
+	 	      $('#'+ target + 'tooltip1b').css({  
+	 	        left:x-chart_left,   
+	 	        top:y-chart_top,  
+	 	        position: 'absolute',  
+	 	        zIndex: 99,  
+	 	        backgroundColor:'#cccccc'  
+	 	        });  
+	 	      $('#'+ target + 'tooltip1b').html('<span style="font-size:14px;font-weight:bold;color:' +   
+	 	        color + ';">' + data[0]+":"+data[1] + '</span><br />');  
+	 	        
+	 	      $('#'+ target + 'tooltip1b').show();  
+	 	    });  
+	 	     
+	 	   // Bind a function to the unhighlight event to clean up after highlighting.  
+	 	    $('#'+ target).bind('jqplotDataUnhighlight',   
+	 	      function (ev, seriesIndex, pointIndex, data) {  
+	 	          if ($('#'+ target + 'tooltip1b')) {  
+	 	            $('#'+ target + 'tooltip1b').empty();  
+	 	            $('#'+ target + 'tooltip1b').hide();  
+	 	          }  
+	 	      });  
+	 	    
+	 }
 </script>
 	<script src="../jquery.jqplot.min.js"></script>
 	<script src="../plugins/jqplot.barRenderer.min.js"></script>
@@ -121,8 +223,11 @@
 <script type="text/javascript" src="../plugins/jqplot.highlighter.min.js"></script>
 <script type="text/javascript" src="../plugins/jqplot.dragable.min.js"></script>
 <script type="text/javascript" src="../plugins/jqplot.trendline.min.js"></script>
-    
+
+<script type="text/javascript"  src="../plugins/jqplot.pieRenderer.js"></script>
+<script type="text/javascript" src="../plugins/jqplot.meterGaugeRenderer.js"></script>
+
     </div>
-    <script type="text/javascript" src="example.min.js"></script>
+ <!--    <script type="text/javascript" src="example.min.js"></script> -->
 </body>
 </html>
